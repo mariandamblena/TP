@@ -1,15 +1,59 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+/**
+ * Programa principal para resolver tableros de Kakuro usando Backtracking.
+ * 
+ * Trabajo Práctico Obligatorio - Programación III
+ * Tema 2: KAKURO
+ * 
+ * El programa lee un tablero desde un archivo, aplica el algoritmo de backtracking
+ * para encontrar una solución válida, y muestra estadísticas de ejecución.
+ */
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        // Archivo de entrada con el tablero inicial
+        String archivoEntrada = "kakuro.txt";
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        System.out.println("=================================================");
+        System.out.println("    SOLVER DE KAKURO - ALGORITMO BACKTRACKING    ");
+        System.out.println("=================================================\n");
+
+        // 1. CARGAR TABLERO desde archivo
+        System.out.println("Cargando tablero desde: " + archivoEntrada);
+        Tablero tablero = Tablero.leerDesdeArchivo(archivoEntrada);
+        
+        if (tablero == null) {
+            System.err.println("ERROR: No se pudo construir el tablero desde '" + archivoEntrada + "'.");
+            System.err.println("Verifica el formato del archivo de entrada.\n");
+            return;
         }
+        
+        System.out.println("Tablero cargado exitosamente.");
+        System.out.println("Celdas blancas a completar: " + tablero.getCeldasBlancas().size() + "\n");
+
+        // 2. CREAR SOLVER y resolver
+        KakuroSolver solver = new KakuroSolver(tablero);
+        
+        System.out.println("Iniciando resolución con Backtracking...\n");
+        
+        // Medir tiempo de ejecución
+        long inicio = System.nanoTime();
+        boolean exito = solver.resolver();
+        long fin = System.nanoTime();
+        
+        // 3. MOSTRAR RESULTADOS
+        System.out.println("=================================================");
+        System.out.println("               RESULTADOS                        ");
+        System.out.println("=================================================");
+        System.out.println("Tiempo de ejecución: " + (fin - inicio) / 1e6 + " ms");
+        System.out.println("Llamadas recursivas: " + solver.getContadorLlamadas());
+        System.out.println();
+
+        if (exito) {
+            System.out.println("✓ SOLUCIÓN ENCONTRADA:\n");
+            tablero.imprimir();
+        } else {
+            System.out.println("✗ No se encontró solución para este Kakuro.");
+        }
+        
+        System.out.println("\n=================================================");
     }
 }
