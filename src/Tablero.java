@@ -22,6 +22,7 @@ import java.util.*;
  */
 public class Tablero {
     private Celda[][] matriz;
+    private String[][] tokens;  // Almacena los tokens originales del archivo
     private List<Run> runsHorizontales = new ArrayList<>();
     private List<Run> runsVerticales = new ArrayList<>();
     private List<Celda> celdasBlancas = new ArrayList<>();
@@ -58,12 +59,14 @@ public class Tablero {
             int columnas = lineas.get(0).length;
             Tablero t = new Tablero();
             t.matriz = new Celda[filas][columnas];
+            t.tokens = new String[filas][columnas];  // Almacenar tokens originales
 
             // Crear solo las celdas blancas (las que se deben completar)
             for (int i = 0; i < filas; i++) {
                 for (int j = 0; j < columnas; j++) {
                     String token = lineas.get(i)[j];
-                    if (token.equals(".")) {
+                    t.tokens[i][j] = token;  // Guardar token original
+                    if (token.equals(".") || token.equals("0")) {  // Reconocer tanto . como 0
                         Celda celda = new Celda(i, j);
                         t.matriz[i][j] = celda;
                         t.celdasBlancas.add(celda);
@@ -87,7 +90,7 @@ public class Tablero {
                         if (sumaH > 0) {
                             List<Celda> celdas = new ArrayList<>();
                             int col = j + 1;
-                            while (col < columnas && lineas.get(i)[col].equals(".")) {
+                            while (col < columnas && (lineas.get(i)[col].equals(".") || lineas.get(i)[col].equals("0"))) {
                                 Celda celda = t.matriz[i][col];
                                 if (celda != null) celdas.add(celda);
                                 col++;
@@ -106,7 +109,7 @@ public class Tablero {
                         if (sumaV > 0) {
                             List<Celda> celdas = new ArrayList<>();
                             int fil = i + 1;
-                            while (fil < filas && lineas.get(fil)[j].equals(".")) {
+                            while (fil < filas && (lineas.get(fil)[j].equals(".") || lineas.get(fil)[j].equals("0"))) {
                                 Celda celda = t.matriz[fil][j];
                                 if (celda != null) celdas.add(celda);
                                 fil++;
@@ -207,17 +210,30 @@ public class Tablero {
      * 
      * Formato de salida:
      * - "X" = celda negra
-     * - "." = celda blanca vacía (valor 0)
+     * - "0" = celda blanca vacía (valor 0)
      * - Números 1-9 = celdas completadas
+     * - Pistas con formato "n/-" o "-/m" (reemplazando 0 con -)
      */
     public void imprimir() {
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
                 if (matriz[i][j] != null) {
+                    // Celda blanca: mostrar valor o 0
                     int val = matriz[i][j].valor;
-                    System.out.print((val == 0 ? "." : val) + " ");
+                    System.out.print((val == 0 ? "0" : val) + " ");
                 } else {
-                    System.out.print("X ");
+                    // Celda negra o con pistas: usar token original
+                    String token = tokens[i][j];
+                    if (token.contains("/")) {
+                        // Es una pista: reemplazar 0 con -
+                        String[] partes = token.split("/");
+                        String parte1 = partes[0].equals("0") ? "-" : partes[0];
+                        String parte2 = partes[1].equals("0") ? "-" : partes[1];
+                        System.out.print(parte1 + "/" + parte2 + " ");
+                    } else {
+                        // Es una X o celda negra
+                        System.out.print(token + " ");
+                    }
                 }
             }
             System.out.println();
