@@ -27,7 +27,8 @@ public class TestKakuro {
             "kakuro_medio.txt",
             "kakuro.txt",
             "kakuro_dificil.txt",
-            "kakuro_imposible.txt"
+            "kakuro_imposible.txt",
+            "kakuro_8x8.txt"
         };
         
         String[] descripciones = {
@@ -35,7 +36,8 @@ public class TestKakuro {
             "TABLERO MEDIO (3x4, ~6 celdas)",
             "TABLERO ORIGINAL TPO (7x7, ~17 celdas)",
             "TABLERO DIFÍCIL (5x5, ~15 celdas)",
-            "TABLERO IMPOSIBLE (sin solución válida)"
+            "TABLERO IMPOSIBLE (sin solución válida)",
+            "TABLERO 8x8 (8x8, 16 celdas)"
         };
         
         int totalPruebas = 0;
@@ -58,20 +60,20 @@ public class TestKakuro {
                 tiempoTotal += resultado.tiempo;
                 llamadasTotales += resultado.llamadas;
                 
-                System.out.println("\n📊 RESULTADOS:");
-                System.out.println("   ⏱️  Tiempo: " + String.format("%.3f", resultado.tiempo / 1e6) + " ms");
-                System.out.println("   🔄 Llamadas recursivas: " + resultado.llamadas);
-                System.out.println("   ✓  Estado: " + (resultado.exito ? "SOLUCIÓN ENCONTRADA ✓" : "SIN SOLUCIÓN ✗"));
+                System.out.println("\nRESULTADOS:");
+                System.out.println("   Tiempo: " + String.format("%.3f", resultado.tiempo / 1e6) + " ms");
+                System.out.println("   Llamadas recursivas: " + resultado.llamadas);
+                System.out.println("   Estado: " + (resultado.exito ? "SOLUCION ENCONTRADA" : "SIN SOLUCION"));
                 
                 if (resultado.exito) {
                     exitosas++;
-                    System.out.println("\n   Solución:");
+                    System.out.println("\n   Solucion:");
                     resultado.tablero.imprimir();
                 } else {
                     fallidas++;
                 }
             } else {
-                System.out.println("   ✗ ERROR: No se pudo cargar el tablero");
+                System.out.println("   ERROR: No se pudo cargar el tablero");
                 fallidas++;
             }
             
@@ -83,10 +85,10 @@ public class TestKakuro {
         System.out.println("║                    RESUMEN FINAL                           ║");
         System.out.println("╚════════════════════════════════════════════════════════════╝");
         System.out.println("  Total de pruebas ejecutadas: " + totalPruebas);
-        System.out.println("  ✓ Soluciones encontradas: " + exitosas);
-        System.out.println("  ✗ Sin solución / Error: " + fallidas);
-        System.out.println("  ⏱️  Tiempo total: " + String.format("%.3f", tiempoTotal / 1e6) + " ms");
-        System.out.println("  🔄 Total llamadas recursivas: " + llamadasTotales);
+        System.out.println("  Soluciones encontradas: " + exitosas);
+        System.out.println("  Sin solucion / Error: " + fallidas);
+        System.out.println("  Tiempo total: " + String.format("%.3f", tiempoTotal / 1e6) + " ms");
+        System.out.println("  Total llamadas recursivas: " + llamadasTotales);
         System.out.println("\n  Complejidad observada: O(9^n) - Exponencial");
         System.out.println("  Clase de problema: NP-Completo");
         System.out.println("════════════════════════════════════════════════════════════\n");
